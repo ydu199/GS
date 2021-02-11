@@ -1,0 +1,72 @@
+---
+title: "G&S_311"
+author: "Yu Du"
+date: "2/9/2021"
+output: pdf_document
+---
+
+In the textbook, on Page 102:
+•	null hypothesis is p=0.6 and the alternate hypothesis is p>0.6
+•	n=100 (the number of people we give aspirin to take) and we need to select m (the critical value for our experiment, we reject the null hypothesis if at least m people are cured, and otherwise we accept it) to make both type 1 error and type 2 error as small as possible.
+```{r}
+#dbinom(x,n,p)
+
+#Create PowerCurve.
+#p ranging from 0.4 to 1.
+
+#First create the probability function alpha.
+alpha<-function(k){
+  p<-seq(0.4,1,1/100)
+  binom<-dbinom(k,100,p)
+  result<-cumsum(binom)
+  return(result)
+}
+```
+
+```{r}
+#alpha(60)
+#alpha(80)
+```
+
+
+```{r}
+#Create PowerCurve.
+library(ggplot2)
+
+PowerCurve<-function(m1,m2){
+  p<-seq(0.4,1,1/100)
+  power1<-alpha(m1)
+  power2<-alpha(m2)
+ggplot()+geom_line(aes(p,power1),color="peru")+geom_line(aes(p,power2),color="blue")+geom_rect(aes(xmin=0.6,xmax=0.8,ymin=0.05,ymax=0.95),color="black",alpha=0)+xlab("Probability")+ylab("Power")+
+  ggtitle("The Power Curve") +theme_classic()+
+  theme(plot.title = element_text(hjust = 0.5))
+}
+```
+
+
+We need to find values of m between 60 and 80 to make the graphs of $\alpha$ enter the box from .6 to .8, with bottom and top at heights .05 and .95.
+we first take a look on the graphs of alpha in the plot when m1=60 and m2=80.
+```{r}
+PowerCurve(60,80)
+```
+
+Now, changing m1 to 65 shows that the graph of $\alpha$ moves to right as m increases. 
+```{r}
+#change m1 to 65.
+PowerCurve(65,80)
+```
+
+We need to increase m1 and decrease m2 to make the graphs of $\alpha$ enter the box. After taking several tries, we find that m1=69 and m2=73. Below are some examples for increasing m1 and decreasing m2.
+```{r}
+PowerCurve(67,76)
+```
+```{r}
+PowerCurve(68,74)
+```
+
+
+As the plot shown below, when m1=69 and m2=73, the graphs of $/alpha$ enter the box. This plot is same as figure 3.7 in the textbook. m1=69 is the smallest value for m that thwarts a type 1 error, while m = 73 is the largest which thwarts a type 2. Therefore, we need take the critical value m for our experiment between 69 and 73.
+```{r}
+PowerCurve(69,73)
+```
+
