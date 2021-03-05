@@ -1,2 +1,2 @@
 # GS
-Example 3.11
+MA677 textbook: Example 3.11 
